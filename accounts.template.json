@@ -1,0 +1,12 @@
+[
+    {
+        "email": "user1@gmail.com",
+        "display_name": "Account 1",
+        "enabled": true
+    },
+    {
+        "email": "user2@gmail.com",
+        "display_name": "Account 2",
+        "enabled": true
+    }
+]

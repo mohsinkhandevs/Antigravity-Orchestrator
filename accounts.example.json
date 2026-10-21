@@ -1,0 +1,28 @@
+[
+    {
+        "email": "user1@example.com",
+        "display_name": "Developer Account 1",
+        "id": "acc01",
+        "enabled": true,
+        "last_used": "",
+        "quota_status": "Ready",
+        "weekly_percent": 100,
+        "weekly_refresh_raw": "",
+        "weekly_reset_at": "",
+        "is_frozen": false,
+        "last_quota_checked": ""
+    },
+    {
+        "email": "user2@example.com",
+        "display_name": "Developer Account 2",
+        "id": "acc02",
+        "enabled": true,
+        "last_used": "",
+        "quota_status": "Ready",
+        "weekly_percent": 100,
+        "weekly_refresh_raw": "",
+        "weekly_reset_at": "",
+        "is_frozen": false,
+        "last_quota_checked": ""
+    }
+]

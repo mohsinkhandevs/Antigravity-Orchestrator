@@ -1,0 +1,95 @@
+name: Release - Standalone Windows Binary
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag (e.g. v1.0.0)'
+        required: false
+        default: ''
+        type: string
+      draft:
+        description: 'Create as Draft'
+        required: false
+        default: false
+        type: boolean
+      prerelease:
+        description: 'Create as Pre-release'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  publish-release:
+    name: Build & Publish Windows Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Install Playwright Browsers
+        run: |
+          playwright install chromium
+
+      - name: Run Test Suite Verification
+        run: |
+          python -m pytest -v
+
+      - name: Build Standalone Executable (.exe)
+        run: |
+          python build_exe.py --onefile
+
+      - name: Determine Release Tag
+        id: vars
+        shell: powershell
+        run: |
+          $tag = "${{ github.ref_name }}"
+          if ("${{ github.event_name }}" -eq "workflow_dispatch" -and "${{ inputs.tag_name }}" -ne "") {
+            $tag = "${{ inputs.tag_name }}"
+          }
+          if ($tag -eq "" -or $tag -eq "main") {
+            $date = Get-Date -Format "yyyy.MM.dd.HHmmss"
+            $tag = "v$date"
+          }
+          Write-Output "tag=$tag" >> $env:GITHUB_OUTPUT
+          Write-Host "Determined Release Tag: $tag"
+
+      - name: Generate Checksum (SHA256)
+        shell: powershell
+        run: |
+          Get-FileHash -Algorithm SHA256 dist\Antigravity_CDP_Studio.exe | Format-List | Out-File dist\checksum-sha256.txt
+          Get-Content dist\checksum-sha256.txt
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: Antigravity CDP Studio ${{ steps.vars.outputs.tag }}
+          files: |
+            dist/Antigravity_CDP_Studio.exe
+            dist/checksum-sha256.txt
+          draft: ${{ inputs.draft || false }}
+          prerelease: ${{ inputs.prerelease || false }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,22 @@
+[
+    {
+        "id": "demo01",
+        "sequence": 0,
+        "name": "Analyze project architecture",
+        "text": "Inspect the project structure, locate core entry points, and generate an architectural summary.",
+        "status": "Pending",
+        "project": "DemoProject",
+        "queue_name": "Default",
+        "created_at": "2026-10-21 12:00:00"
+    },
+    {
+        "id": "demo02",
+        "sequence": 1,
+        "name": "Run unit test suite",
+        "text": "Execute the automated test suite and report any coverage gaps.",
+        "status": "Pending",
+        "project": "DemoProject",
+        "queue_name": "Default",
+        "created_at": "2026-10-21 12:05:00"
+    }
+]
